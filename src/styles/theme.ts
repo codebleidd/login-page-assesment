@@ -1,22 +1,27 @@
-import { DefaultTheme } from 'styled-components'
+import { createMuiTheme, Theme } from '@material-ui/core/styles'
 
-const theme: DefaultTheme = {
-  color: {
+const theme: Theme = createMuiTheme({
+  palette: {
     primary: {
-      '500': '#F0B429',
-      '50': '#FFFBEA',
+      dark: '#F0B429',
+      main: '#F7C948',
+      light: '#FCE588',
     },
     secondary: {
-      '500': '#2BB0ED',
+      dark: '#1992D4',
+      main: '#40C3F7',
+      light: '#81DEFD',
+      contrastText: 'white',
     },
-    white: '#ffffff',
-    black: '#000000',
+    neutral: {
+      dark: '#515151',
+      main: '#7E7E7E',
+      light: '#B1B1B1',
+    },
   },
-
-  border: {
-    radius: '3px',
-    width: '1px',
+  typography: {
+    fontFamily: ['Lato', 'sans-serif'].join(','),
   },
-}
+})
 
 export { theme }

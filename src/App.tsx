@@ -1,13 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-} from '@material-ui/core'
 
-import Header from './components/Header'
 import LoginForm from './components/LoginForm'
 import background from './images/background.jpg'
 

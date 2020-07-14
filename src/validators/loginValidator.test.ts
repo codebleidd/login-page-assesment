@@ -15,25 +15,29 @@ describe('loginValidator', () => {
       email: 'test@test.com',
       password: 'asdf12ffffff',
     }
-    let a = await loginValidator.validate(TEST_OBJECT).catch(e => e)
-    expect(a.errors).toContain('Password should contain an uppercase letter')
+    let validation = await loginValidator.validate(TEST_OBJECT).catch(e => e)
+    expect(validation.errors).toContain(
+      'Password should contain an uppercase letter'
+    )
   })
 
-  it('should throw error as ther is no number', async () => {
+  it('should throw error as there is no number', async () => {
     const TEST_OBJECT: FormValues = {
       email: 'test@test.com',
       password: 'asdfFfffff',
     }
-    let a = await loginValidator.validate(TEST_OBJECT).catch(e => e)
-    expect(a.errors).toContain('Password should contain a number')
+    let validation = await loginValidator.validate(TEST_OBJECT).catch(e => e)
+    expect(validation.errors).toContain('Password should contain a number')
   })
 
-  it('should throw error as ther is no number', async () => {
+  it('should throw error as the password is too short', async () => {
     const TEST_OBJECT: FormValues = {
       email: 'test@test.com',
       password: 'asdfFf',
     }
-    let a = await loginValidator.validate(TEST_OBJECT).catch(e => e)
-    expect(a.errors).toContain('Password should contain at least 8 characters')
+    let validation = await loginValidator.validate(TEST_OBJECT).catch(e => e)
+    expect(validation.errors).toContain(
+      'Password should contain at least 8 characters'
+    )
   })
 })

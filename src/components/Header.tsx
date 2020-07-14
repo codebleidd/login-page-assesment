@@ -2,14 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
-export const Title = styled(Typography)`
+const Title = styled(Typography)`
   color: ${({ theme }) => theme.palette.neutral.dark};
 
   margin-bottom: 8px;
 `
-export const Subtitle = styled(Typography)`
+const Subtitle = styled(Typography)`
   color: ${({ theme }) => theme.palette.neutral.main};
-
   margin-bottom: 32px;
 `
 

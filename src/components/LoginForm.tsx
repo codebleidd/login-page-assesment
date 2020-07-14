@@ -1,14 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
+import { motion } from 'framer-motion'
 import {
   Button,
   Checkbox,
   FormControlLabel,
   TextField,
 } from '@material-ui/core'
+import ErrorIcon from '@material-ui/icons/Error'
 import { Formik, Field, FieldInputProps, FieldMetaProps } from 'formik'
 
 import { loginValidator } from '../validators'
+import { login } from '../api/login'
+import { Credentials } from '../types/credentials'
 
 const Form = styled.form`
   display: flex;
@@ -20,26 +24,72 @@ const StyledTextField = styled(TextField)`
 `
 const StyledFormControlLabel = styled(FormControlLabel)`
   color: ${({ theme }) => theme.palette.neutral.dark};
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+`
+const StyledButton = styled(Button)`
+  margin-top: 8px;
+`
+const FormError = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.palette.error.main};
+  border: 1px solid ${({ theme }) => theme.palette.error.main};
+  border-radius: 4px;
+  padding: 8px 14px;
+
+  .MuiSvgIcon-root {
+    margin-right: 8px;
+  }
 `
 
+interface LoginFormState {
+  requestStatus: string
+  formError?: string
+}
 interface FieldHelpers {
   field: FieldInputProps<string>
   meta: FieldMetaProps<string>
 }
 
-export interface FormValues {
-  email: string
-  password: string
+interface FormValues extends Credentials {
   shouldFail?: boolean
 }
 
-class LoginForm extends React.Component<{}, {}> {
+const initialValues: FormValues = { email: '', password: '', shouldFail: false }
+
+class LoginForm extends React.Component<{}, LoginFormState> {
+  state = {
+    requestStatus: 'NONE',
+    formError: '',
+  }
+
+  onSubmit = (data: FormValues) => {
+    const credentials: Credentials = {
+      email: data.email,
+      password: data.password,
+    }
+
+    this.setState({ requestStatus: 'PENDING', formError: '' }, () =>
+      login(credentials, data.shouldFail)
+        .then(() => this.setState({ requestStatus: 'SUCCESS', formError: '' }))
+        .catch(err => {
+          this.setState({
+            requestStatus: 'ERROR',
+            formError: err.errorMessage || 'Unknown error occured',
+          })
+        })
+    )
+  }
+
   render() {
+    const { requestStatus, formError } = this.state
+    const isSubmitDisabled = requestStatus === 'PENDING'
+    const hasError = requestStatus === 'ERROR'
+
     return (
       <Formik
-        initialValues={{ email: '', password: '', shouldFail: false }}
-        onSubmit={console.log}
+        initialValues={initialValues}
+        onSubmit={this.onSubmit}
         validationSchema={loginValidator}
       >
         {props => (
@@ -77,14 +127,27 @@ class LoginForm extends React.Component<{}, {}> {
                 />
               )}
             </Field>
-            <Button
+            {hasError && (
+              <motion.div
+                exit={{ opacity: 0, x: 30, y: 0 }}
+                initial={{ opacity: 0, x: 30, y: 0 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <FormError data-testid='login-form__form-error'>
+                  <ErrorIcon color='error' /> {formError}
+                </FormError>
+              </motion.div>
+            )}
+            <StyledButton
               variant='contained'
               color='primary'
               size='large'
               type='submit'
+              disabled={isSubmitDisabled}
             >
               Log in
-            </Button>
+            </StyledButton>
           </Form>
         )}
       </Formik>

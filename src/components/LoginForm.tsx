@@ -60,7 +60,7 @@ interface FormValues extends Credentials {
 
 const initialValues: FormValues = { email: '', password: '', shouldFail: false }
 
-class LoginForm extends React.Component<LoginFormProps, LoginFormState, {}> {
+class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   state = {
     requestStatus: 'NONE',
     formError: '',
@@ -81,11 +81,14 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState, {}> {
       email: data.email,
       password: data.password,
     }
+    const { onLoginSuccess } = this.props
 
     this.setState({ requestStatus: 'PENDING', formError: '' }, () =>
       login(credentials, data.shouldFail)
         .then(() => {
-          this.props.onLoginSuccess()
+          if (onLoginSuccess) {
+            onLoginSuccess()
+          }
           if (this.isComponentMounted) {
             this.setState({ requestStatus: 'SUCCESS', formError: '' })
           }

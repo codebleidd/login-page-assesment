@@ -8,13 +8,12 @@ import {
 } from '@material-ui/core'
 import { Formik, Field, FieldInputProps, FieldMetaProps } from 'formik'
 
-import Header from './Header'
 import { loginValidator } from '../validators'
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  margin: auto;
+  min-width: 100%;
 `
 const StyledTextField = styled(TextField)`
   margin-bottom: 16px;
@@ -45,11 +44,6 @@ class LoginForm extends React.Component<{}, {}> {
       >
         {props => (
           <Form onSubmit={props.handleSubmit}>
-            <Header
-              title='Hey buddy'
-              subtitle="Log in and see what's your next adventure"
-            />
-
             <Field name='email'>
               {({ field, meta }: FieldHelpers) => (
                 <StyledTextField

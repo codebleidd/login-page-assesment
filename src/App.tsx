@@ -3,17 +3,16 @@ import styled from 'styled-components'
 
 import LoginForm from './components/LoginForm'
 import background from './images/background.jpg'
+import Header from './components/Header'
 
 const Wrapper = styled.div`
   flex-grow: 1;
   display: grid;
-  justify-items: center;
-  align-items: center;
   grid-template-columns: 3fr 4fr;
   background: url(${background}) no-repeat;
   background-position: center;
   background-size: cover;
-  overflow: hidden;
+  overflow: auto;
 
   @media screen and (max-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) {
@@ -24,11 +23,11 @@ const Wrapper = styled.div`
 `
 const LoginSection = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   padding: 32px 96px;
   background-color: #fffffff8;
-  overflow: auto;
-  height: 100%;
+  min-height: auto;
 
   @media screen and (max-width: ${({ theme }) =>
       theme.breakpoints.values.md}px) {
@@ -37,6 +36,7 @@ const LoginSection = styled.div`
 
   @media screen and (max-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) {
+    margin: auto 0;
     padding: 16px 24px;
     height: initial;
   }
@@ -47,6 +47,10 @@ class App extends React.Component<{}, {}> {
     return (
       <Wrapper>
         <LoginSection data-testid='app__login-section'>
+          <Header
+            title='Hey buddy'
+            subtitle="Log in and see what's your next adventure"
+          />
           <LoginForm />
         </LoginSection>
       </Wrapper>

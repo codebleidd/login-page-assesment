@@ -4,7 +4,6 @@ import { Typography } from '@material-ui/core'
 
 const Title = styled(Typography)`
   color: ${({ theme }) => theme.palette.neutral.dark};
-
   margin-bottom: 8px;
 `
 const Subtitle = styled(Typography)`

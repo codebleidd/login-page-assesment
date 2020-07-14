@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import LoginForm from './components/LoginForm'
 import background from './images/background.jpg'
 import Header from './components/Header'
+import MountTransition from './components/MountTransition'
+import SuccessScreen from './components/SuccessScreen'
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -42,20 +44,26 @@ const LoginSection = styled.div`
   }
 `
 
-class App extends React.Component<{}, {}> {
-  render() {
-    return (
-      <Wrapper>
-        <LoginSection data-testid='app__login-section'>
-          <Header
-            title='Hey buddy'
-            subtitle="Log in and see what's your next adventure"
-          />
-          <LoginForm />
-        </LoginSection>
-      </Wrapper>
-    )
-  }
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  return (
+    <Wrapper>
+      <LoginSection data-testid='app__login-section'>
+        {!isLoggedIn ? (
+          <MountTransition>
+            <Header
+              title='Hey buddy'
+              subtitle="Log in and see what's your next adventure"
+            />
+            <LoginForm onLoginSuccess={() => setIsLoggedIn(true)} />
+          </MountTransition>
+        ) : (
+          <SuccessScreen />
+        )}
+      </LoginSection>
+    </Wrapper>
+  )
 }
 
 export default App

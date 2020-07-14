@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { motion } from 'framer-motion'
 import {
   Button,
   Checkbox,
@@ -13,6 +12,7 @@ import { Formik, Field, FieldInputProps, FieldMetaProps } from 'formik'
 import { loginValidator } from '../validators'
 import { login } from '../api/login'
 import { Credentials } from '../types/credentials'
+import MountTransition from './MountTransition'
 
 const Form = styled.form`
   display: flex;
@@ -46,6 +46,9 @@ interface LoginFormState {
   requestStatus: string
   formError?: string
 }
+interface LoginFormProps {
+  onLoginSuccess: () => void
+}
 interface FieldHelpers {
   field: FieldInputProps<string>
   meta: FieldMetaProps<string>
@@ -57,10 +60,20 @@ interface FormValues extends Credentials {
 
 const initialValues: FormValues = { email: '', password: '', shouldFail: false }
 
-class LoginForm extends React.Component<{}, LoginFormState> {
+class LoginForm extends React.Component<LoginFormProps, LoginFormState, {}> {
   state = {
     requestStatus: 'NONE',
     formError: '',
+  }
+
+  isComponentMounted: boolean = false
+
+  componentDidMount() {
+    this.isComponentMounted = true
+  }
+
+  componentWillUnmount() {
+    this.isComponentMounted = false
   }
 
   onSubmit = (data: FormValues) => {
@@ -71,7 +84,12 @@ class LoginForm extends React.Component<{}, LoginFormState> {
 
     this.setState({ requestStatus: 'PENDING', formError: '' }, () =>
       login(credentials, data.shouldFail)
-        .then(() => this.setState({ requestStatus: 'SUCCESS', formError: '' }))
+        .then(() => {
+          this.props.onLoginSuccess()
+          if (this.isComponentMounted) {
+            this.setState({ requestStatus: 'SUCCESS', formError: '' })
+          }
+        })
         .catch(err => {
           this.setState({
             requestStatus: 'ERROR',
@@ -128,16 +146,11 @@ class LoginForm extends React.Component<{}, LoginFormState> {
               )}
             </Field>
             {hasError && (
-              <motion.div
-                exit={{ opacity: 0, x: 30, y: 0 }}
-                initial={{ opacity: 0, x: 30, y: 0 }}
-                animate={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.15 }}
-              >
+              <MountTransition>
                 <FormError data-testid='login-form__form-error'>
                   <ErrorIcon color='error' /> {formError}
                 </FormError>
-              </motion.div>
+              </MountTransition>
             )}
             <StyledButton
               variant='contained'
